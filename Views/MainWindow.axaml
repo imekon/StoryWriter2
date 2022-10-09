@@ -1,0 +1,81 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:scg="using:System.Collections.Generic"
+        xmlns:vm="using:StoryWriter.ViewModels"
+		xmlns:helpers="using:StoryWriter.Helpers"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="StoryWriter.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="StoryWriter">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <DockPanel LastChildFill="True">
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="_File">
+				<MenuItem Header="_Load..." Command="{Binding LoadCommand}"/>
+                <MenuItem Header="_Save..." Command="{Binding SaveCommand}"/>
+			    <MenuItem Header="_Update..." Command="{Binding UpdateCommand}"/>
+			    <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
+			</MenuItem>
+		    <MenuItem Header="_Story">
+				<MenuItem Header="_Add"/>
+			    <MenuItem Header="_Remove"/>
+			</MenuItem>
+		</Menu>
+	
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="5"/>
+				<ColumnDefinition Width="2*"/>
+			</Grid.ColumnDefinitions>
+
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition />
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+			
+			<TextBox Grid.Column="0" Grid.Row="0" Text="{Binding Filter}"/>
+			<TreeView Grid.Column="0" Grid.Row="1" Items="{Binding Folders}" SelectedItem="{Binding SelectedStory}">
+				<TreeView.Items>
+					<scg:List x:TypeArguments="vm:StoryViewModel">
+						<vm:StoryViewModel Template="Folder"/>
+						<vm:StoryViewModel Template="Story"/>
+					</scg:List>
+				</TreeView.Items>
+				
+				<TreeView.ItemTemplate>
+					<TreeDataTemplate ItemsSource="{Binding Children}">
+						<TextBlock Text="{Binding Title}" Background="{Binding StoryColour}"/>
+					</TreeDataTemplate>
+				</TreeView.ItemTemplate>
+				
+				<!--
+				<TreeView.DataTemplates>
+					<helpers:StoryViewModelTemplateSelector>
+						<TreeDataTemplate x:Key="Folder" ItemsSource="{Binding Children}">
+							<TextBlock Text="{Binding Title}"/>
+						</TreeDataTemplate>
+						<TreeDataTemplate x:Key="Story">
+							<TextBlock Text="{Binding Title}" Background="{Binding StoryColour}"/>							
+						</TreeDataTemplate>
+					</helpers:StoryViewModelTemplateSelector>
+				</TreeView.DataTemplates>
+				-->
+				
+			</TreeView>
+			<GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"/>
+			<TextBox Grid.Column="2" Grid.Row="0" Text="{Binding Title}"/>
+			<TextBox Grid.Column="2" Grid.Row="1" Text="{Binding Text}" 
+					 TextWrapping="Wrap" FontFamily="Consolas" FontSize="20"
+					 AcceptsReturn="True"/>
+			<TextBox Grid.Column="2" Grid.Row="2" Text="{Binding Tags}"/>
+		</Grid>
+	</DockPanel>
+</Window>
